@@ -9,8 +9,12 @@ void registry_init(Registry *r) {
     r->capacity = 0;
 }
 
+int calculate_new_index(int id, int capacity) {
+	return (int)((unsigned)id * HASH_MULT % (unsigned)capacity);
+}
+
 int registry_calculate_index(Registry *r, int id) {
-	return (int)((unsigned)id * HASH_MULT % (unsigned)r->capacity);
+	return calculate_new_index(id, r->capacity);
 }
 
 void registry_add(Registry *r, int id) {
@@ -24,7 +28,7 @@ void registry_add(Registry *r, int id) {
         		new_slots = calloc(new_cap, new_cap * sizeof(Slot));
 			for (int i = 0; i < r-> capacity; i++) {
 				if (r->slots[index].occupied) {
-					int new_index = registry_calculate_index(r, r->slots[index].value);
+					int new_index = calculate_new_index(r->slots[index].value, new_cap);
 					new_slots[new_index] = r->slots[index];
 					index = registry_calculate_index(r, (index + 1) % r->capacity);
 				}
