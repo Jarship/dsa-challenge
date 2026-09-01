@@ -15,7 +15,7 @@ void registry_add(Registry *r, int id) {
         	r->slots = new_slots;
         	r->capacity = new_cap;
 	}
-	int index = id % r->capacity;
+	int index = abs(id) % r->capacity;
 	int i = index;
 	while (r->slots[i].occupied) {
 		if (r-> slots[i].value == id) return;
@@ -27,7 +27,7 @@ void registry_add(Registry *r, int id) {
 }
 
 int registry_contains(Registry *r, int id) {
-	int index = id % r->capacity;
+	int index = abs(id) % r->capacity;
 	if (index >= r->capacity)
 		return 0;
 	int i = index;
