@@ -9,38 +9,53 @@ void registry_init(Registry *r) {
     r->capacity = 0;
 }
 
+int registry_calculate_index(Registry *r, int id) {
+	return (int)((unsigned)id * HASH_MULT % (unsigned)r->capacity);
+}
+
 void registry_add(Registry *r, int id) {
+	int index = 0;
 	if (r->count == r->capacity) {
-        	int new_cap = r->capacity == 0 ? 16 : r->capacity * 2;
-        	Slot *new_slots = realloc(r->slots, new_cap * sizeof(Slot));
-        	if (!new_slots) return;
+        	int new_cap = r->capacity == 0 ? 32 : r->capacity * 2;
+        	Slot *new_slots = (Slot *)NULL;
+		if (r->count > 0) {
+			while(index <= r->capacity) {
+				if (r->slots[index].occupied) {
+					int new_index = registry_calculate_index(r, r->slots[index].value);
+					new_slots[new_index] = r->slots[index];
+					index = registry_calculate_index(r, (index + 1) % r->capacity);
+				}
+			}
+		} else {
+			new_slots = realloc(r->slots, sizeof(Slot) * new_cap);
+		}
+		void *old_address = (void *)r->slots;
         	r->slots = new_slots;
+		free(old_address);
         	r->capacity = new_cap;
 	}
-	int index = (int)((unsigned)id * HASH_MULT) % r->capacity;
+	index = registry_calculate_index(r, id);
+	if (index >= r->capacity) return;
 	int i = index;
-	if (index >= r->capacity)
-		return;
 	while (r->slots[i].occupied) {
-		if (r-> slots[i].value == id) return;
+		if (r->slots[i].value == id) return;
 		i = (i + 1) % r->capacity;
 		if (i == index) return;
 	}
-	Slot s = { .value= id, .occupied= 1 };
-    	r->slots[i] = s; 
+	Slot s = { .value = id, .occupied = 1 };
+    	r->slots[i] = s;
     	r->count++;
 }
 
 int registry_contains(Registry *r, int id) {
-	int index = (int)((unsigned)id * HASH_MULT) % r->capacity;
+	int index = registry_calculate_index(r, id);
 	if (index >= r->capacity)
 		return 0;
 	int i = index;
 	while (r->slots[i].occupied) {
 		if (r->slots[i].value == id) return 1;
 		i = (i + 1) % r->capacity;
-		if (i == index)
-			return 0;
+		if (i == index) return 0;
 	}
 	return 0;
 }
