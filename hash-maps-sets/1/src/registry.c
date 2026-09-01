@@ -20,9 +20,10 @@ void registry_add(Registry *r, int id) {
 	while (r->slots[i].occupied) {
 		if (r-> slots[i].value == id) return;
 		i = (i + 1) % r->capacity;
+		if (i == index) return;
 	}   
-    	r->slots[index].value = id;
-    	r->slots[index].occupied = 1;
+    	r->slots[i].value = id;
+    	r->slots[i].occupied = 1;
     	r->count++;
 }
 
