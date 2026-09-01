@@ -29,8 +29,8 @@ Run from the **challenge directory** (`hash-maps-sets/1/`):
 cd hash-maps-sets/1
 # test
 gcc -o test_registry test/test_registry.c src/registry.c && ./test_registry
-# benchmark
-gcc -o benchmark benchmark/benchmark.c src/registry.c && ./benchmark
+# benchmark (output named benchmark_run to avoid clashing with the benchmark/ dir)
+gcc -o benchmark_run benchmark/benchmark.c src/registry.c && ./benchmark_run
 ```
 
 ## Expected
