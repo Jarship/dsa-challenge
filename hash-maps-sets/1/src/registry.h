@@ -2,7 +2,12 @@
 #define REGISTRY_H
 
 typedef struct {
-    int *ids;
+	int value;
+	int occupied;
+} Slot;
+
+typedef struct {
+    Slot *slots;
     int count;
     int capacity;
 } Registry;
