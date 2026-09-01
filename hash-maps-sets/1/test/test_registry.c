@@ -20,6 +20,8 @@ int main(void) {
     registry_init(&r);
     for (int i = 0; i < N; i++) registry_add(&r, i);
     for (int i = 0; i < N; i++) assert(registry_contains(&r, i));
+    /* IDs that were never added must NOT be reported as present */
+    for (int i = 0; i < N; i++) assert(!registry_contains(&r, N + i));
     registry_free(&r);
 
     printf("All tests passed.\n");
