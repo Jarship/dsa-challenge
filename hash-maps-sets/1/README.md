@@ -23,7 +23,10 @@ that `registry_contains` is **O(1) average** instead of O(n).
 - `benchmark/benchmark.c` — measures the naive cost.
 
 ## Build & run
+Run from the **challenge directory** (`hash-maps-sets/1/`):
+
 ```bash
+cd hash-maps-sets/1
 # test
 gcc -o test_registry test/test_registry.c src/registry.c && ./test_registry
 # benchmark
