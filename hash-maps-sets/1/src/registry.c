@@ -19,6 +19,8 @@ void registry_add(Registry *r, int id) {
 	}
 	int index = (int)((unsigned)id * HASH_MULT) % r->capacity;
 	int i = index;
+	if (index >= r->capacity)
+		return;
 	while (r->slots[i].occupied) {
 		if (r-> slots[i].value == id) return;
 		i = (i + 1) % r->capacity;
