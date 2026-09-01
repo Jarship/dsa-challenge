@@ -1,6 +1,8 @@
 #include "registry.h"
 #include <stdlib.h>
 
+static const unsigned int HASH_MULT = 2654435761u;
+
 void registry_init(Registry *r) {
     r->slots = NULL;
     r->count = 0;
@@ -15,20 +17,20 @@ void registry_add(Registry *r, int id) {
         	r->slots = new_slots;
         	r->capacity = new_cap;
 	}
-	int index = abs(id) % r->capacity;
+	int index = (int)((unsigned)id * HASH_MULT) % r->capacity;
 	int i = index;
 	while (r->slots[i].occupied) {
 		if (r-> slots[i].value == id) return;
 		i = (i + 1) % r->capacity;
 		if (i == index) return;
-	}   
-    	r->slots[i].value = id;
-    	r->slots[i].occupied = 1;
+	}
+	Slot s = { .value= id, .occupied= 1 };
+    	r->slots[i] = s; 
     	r->count++;
 }
 
 int registry_contains(Registry *r, int id) {
-	int index = abs(id) % r->capacity;
+	int index = (int)((unsigned)id * HASH_MULT) % r->capacity;
 	if (index >= r->capacity)
 		return 0;
 	int i = index;
