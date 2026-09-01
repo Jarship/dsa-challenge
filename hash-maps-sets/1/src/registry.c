@@ -17,19 +17,20 @@ void registry_add(Registry *r, int id) {
 	int index = 0;
 	if (r->count == r->capacity) {
         	int new_cap = r->capacity == 0 ? 32 : r->capacity * 2;
-        	Slot *new_slots = (Slot *)NULL;
-		if (r->count > 0) {
-			while(index <= r->capacity) {
+		Slot *new_slots;
+		if (r-> count <= 0)
+			new_slots = realloc(r->slots, sizeof(Slot) * new_cap);
+		else {
+        		new_slots = calloc(new_cap, new_cap * sizeof(Slot));
+			for (int i = 0; i < r-> capacity; i++) {
 				if (r->slots[index].occupied) {
 					int new_index = registry_calculate_index(r, r->slots[index].value);
 					new_slots[new_index] = r->slots[index];
 					index = registry_calculate_index(r, (index + 1) % r->capacity);
 				}
 			}
-		} else {
-			new_slots = realloc(r->slots, sizeof(Slot) * new_cap);
 		}
-		void *old_address = (void *)r->slots;
+		Slot *old_address = r->slots;
         	r->slots = new_slots;
 		free(old_address);
         	r->capacity = new_cap;
