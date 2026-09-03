@@ -18,20 +18,18 @@ int registry_calculate_index(Registry *r, int id) {
 }
 
 void registry_add(Registry *r, int id) {
-	int index = 0;
 	if (r->count == r->capacity) {
         	int new_cap = r->capacity == 0 ? 32 : r->capacity * 2;
 		Slot *new_slots;
 		if (r-> count <= 0)
-			new_slots = realloc(r->slots, sizeof(Slot) * new_cap);
+			new_slots = calloc(new_cap, sizeof(Slot));
 		else {
         		new_slots = calloc(new_cap, sizeof(Slot));
 			for (int i = 0; i < r-> capacity; i++) {
 				if (r->slots[i].occupied) {
-					int new_index = calculate_new_index(r->slots[index].value, new_cap);
+					int new_index = calculate_new_index(r->slots[i].value, new_cap);
 					while(new_slots[new_index].occupied) new_index = (new_index + 1) % new_cap;
 					new_slots[new_index] = r->slots[i];
-					index = (index + 1) % r->capacity;
 				}
 			}
 		}
@@ -40,7 +38,7 @@ void registry_add(Registry *r, int id) {
 		free(old_address);
         	r->capacity = new_cap;
 	}
-	index = registry_calculate_index(r, id);
+	int index = registry_calculate_index(r, id);
 	if (index >= r->capacity) return;
 	int i = index;
 	while (r->slots[i].occupied) {
